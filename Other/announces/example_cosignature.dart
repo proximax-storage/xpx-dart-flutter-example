@@ -18,7 +18,7 @@ void main() async {
   final client = ApiClient.fromConf(config, null);
 
   final addressTwo = Account.fromPrivateKey(
-      '68f50e10e5b8be2b7e9ddb687a667d6e94dd55fe02b4aed8195f51f9a242558c',
+      '1ACE45EAD3C2F0811D9F4355F35BF78483324975083BE4E503EA49DFFEA691A0',
       networkType);
 
   try {

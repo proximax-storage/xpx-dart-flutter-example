@@ -17,7 +17,7 @@ void main() async {
 
   /// Create an Address from a given Public key.
   final accountTwo = Account.fromPrivateKey(
-      '68f50e10e5b8be2b7e9ddb687a667d6e94dd55fe02b4aed8195f51f9a242558b',
+      '68f50e10e5b8be2b7e9ddb687a667d6e94dd55fe02b4aed8195f51f9a242558c',
       networkType);
 
   final deadline = Deadline(hours: 1);

@@ -12,7 +12,7 @@ void main() async {
 
   /// Create an Account from a given Private key.
   final account = Account.fromPrivateKey(
-      '52BFDA0BDC6456ECAF78B8D2046A8ECB1D951B5BB95EE37165627959DD7C029E',
+      '1ACE45EAD3C2F0811D9F4355F35BF78483324975083BE4E503EA49DFFEA691A0',
       networkType);
 
   print(account);
