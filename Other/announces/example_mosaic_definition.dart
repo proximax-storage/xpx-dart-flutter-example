@@ -29,7 +29,7 @@ void main() async {
   print(mosaicDefinition.mosaicId.id);
   final stx = account.sign(mosaicDefinition);
 
-  final restTx = await client.transaction.announceTransaction(stx);
+  final restTx = await client.transaction.announce(stx);
   print(restTx);
   print('Hash: ${stx.hash}');
   print('Signer: ${account.publicAccount.publicKey}');

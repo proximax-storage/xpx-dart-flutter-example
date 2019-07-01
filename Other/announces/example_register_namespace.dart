@@ -31,7 +31,7 @@ void main() async {
       networkType);
   final stx = account.sign(tx);
 
-  final restTx = await client.transaction.announceTransaction(stx);
+  final restTx = await client.transaction.announce(stx);
   print(restTx);
   print('Hash: ${stx.hash}');
   print('Signer: ${account.publicAccount.publicKey}');
@@ -42,7 +42,7 @@ void main() async {
       Deadline(hours: 1), 'vensubnamespace', parentNamespace, networkType);
   final stx2 = account.sign(tx2);
 
-  final restTx2 = await client.transaction.announceTransaction(stx2);
+  final restTx2 = await client.transaction.announce(stx2);
   print(restTx2);
   print('Hash: ${stx2.hash}');
   print('Signer: ${account.publicAccount.publicKey}');

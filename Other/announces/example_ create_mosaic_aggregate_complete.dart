@@ -44,12 +44,12 @@ void main() async {
   mosaicSupplyChange.toAggregate = account.publicAccount;
 
   // Create Aggregate complete transaction.
-  final aggregateTransaction = AggregateTransaction(
+  final aggregateTransaction = AggregateTransaction.complete(
       deadline, [mosaicDefinition, mosaicSupplyChange], networkType);
 
   final stx = account.sign(aggregateTransaction);
 
-  final restTx = await client.transaction.announceTransaction(stx);
+  final restTx = await client.transaction.announce(stx);
   print(restTx);
   print('Hash: ${stx.hash}');
   print('Signer: ${account.publicAccount.publicKey}');

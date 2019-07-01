@@ -17,7 +17,7 @@ void main() async {
 
   /// Create an Address from a given Public key.
   var recipient = Address.fromPublicKey(
-      '68f50e10e5b8be2b7e9ddb687a667d6e94dd55fe02b4aed8195f51f9a242558b',
+      '68f50e10e5b8be2b7e9ddb687a667d6e94dd55fe02b4aed8195f51f9a242558c',
       networkType);
 
   /// Create a  transaction type transfer
@@ -34,7 +34,7 @@ void main() async {
 
   var stx = account.sign(tx);
 
-  var restTx = await client.transaction.announceTransaction(stx);
+  var restTx = await client.transaction.announce(stx);
   print(restTx);
   print('Hash: ${stx.hash}');
   print('Signer: ${account.publicAccount.publicKey}');

@@ -51,11 +51,11 @@ void main() async {
 
   // Create Aggregate complete transaction.
   final aggregateTransaction =
-      AggregateTransaction(deadline, [ttxOne, ttxTwo], networkType);
+      AggregateTransaction.complete(deadline, [ttxOne, ttxTwo], networkType);
 
   final stx = account.sign(aggregateTransaction);
 
-  final restTx = await client.transaction.announceTransaction(stx);
+  final restTx = await client.transaction.announce(stx);
   print(restTx);
   print('Hash: ${stx.hash}');
   print('Signer: ${account.publicAccount.publicKey}');
