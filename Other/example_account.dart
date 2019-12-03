@@ -2,11 +2,9 @@ import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
 /// Simple Account API request
 void main() async {
-  const baseUrl = 'http://bctestnet1.xpxsirius.io:3000';
+  const baseUrl = 'http://bctestnet2.brimstone.xpxsirius.io:3000';
 
   const networkType = publicTest;
-
-  final config = Config(baseUrl, networkType);
 
   /// Creating a client instance
   /// xpx_chain_sdk uses the Dart's native HttpClient.
@@ -15,35 +13,69 @@ void main() async {
   /// example:
   /// 1- import 'package:http/browser_client.dart';
   /// 2- var client = newClient(config,  BrowserClient());
-  final client = ApiClient.fromConf(config, null);
+  final client = SiriusClient.fromUrl(baseUrl, null);
+
+  /// Create an PublicAccount from a given public key.
+  final accountOne = PublicAccount.fromPublicKey(
+      '0D5248B9F8A9F8182DD2379F90F53906F054CC3A6C9FE621B291FD1212A7596A',
+      networkType);
 
   /// Create an Address from a given public key.
-  final addressOne = Address.fromPublicKey(
-      'C64FA80DB046F488CC1C480454834D4CAE8284DDC14D6E93332AD02E345FF2C6',
-      networkType);
-
   final addressTwo = Address.fromPublicKey(
-      '72837FC53D330A289FBC3CC41A44DD52C0DBA25566BF6AD5FC03CDBC4FAD4CB4',
+      '3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF331368A4232FD5',
       networkType);
-  print(addressTwo);
 
   try {
     /// Get AccountInfo for an account.
-    /// Param address - A Address object.
-    var result = await client.account.getAccountInfo(addressOne);
+    /// Param address - address to get info.
+    final result = await client.account.getAccountInfo(accountOne.address);
     print(result);
-  } catch (e) {
+  } on Exception catch (e) {
     print('Exception when calling Account->GetAccountInfo: $e\n');
   }
 
-  var adds = <String>[addressOne.address, addressTwo.address];
+  try {
+    /// Get AccountInfo for multiple accounts.
+    /// Param List Addresses - addresses to get info.
+    final result = await client.account.getAccountsInfo([accountOne.address, addressTwo]);
+    print(result);
+  } on Exception catch (e) {
+    print('Exception when calling Account->GetAccountsInfo: $e\n');
+  }
 
   try {
-    /// Get accounts information.
-    /// Param address - A Address object.
-    var result = await client.account.getAccountsInfo(adds);
+    /// Get confirmed transactions information.
+    /// Public Account - account to get transactions associated.
+    final result = await client.account.transactions(accountOne);
     print(result);
-  } catch (e) {
-    print("Exception when calling Account->GetAccountsInfo: $e\n");
+  } on Exception catch (e) {
+    print('Exception when calling Account->GetAccountsInfo: $e\n');
+  }
+
+  try {
+    /// Get incoming transactions information.
+    /// Public Account - account to get transactions associated.
+    final result = await client.account.incomingTransactions(accountOne);
+    print(result);
+  } on Exception catch (e) {
+    print('Exception when calling Account->IncomingTransactions: $e\n');
+  }
+
+  /// Get outgoing transactions information.
+  /// Public Account - account to get transactions associated.
+  try {
+    final result = await client.account.outgoingTransactions(accountOne);
+    print(result);
+  } on Exception catch (e) {
+    print('Exception when calling Account->OutgoingTransactions: $e\n');
+  }
+
+  /// Get unconfirmed transactions information.
+  /// Public Account - account to get transactions associated.
+  try {
+    final result = await client.account.unconfirmedTransactions(accountOne);
+    print(result);
+  } on Exception catch (e) {
+    print('Exception when calling Account->UnconfirmedTransactions: $e\n');
   }
 }

@@ -4,8 +4,6 @@ import 'package:xpx_chain_sdk/xpx_sdk.dart';
 void main() async {
   const baseUrl = 'http://bctestnet2.brimstone.xpxsirius.io:3000';
 
-  const networkType = publicTest;
-
   /// Creating a client instance
   /// xpx_chain_sdk uses the Dart's native HttpClient.
   /// Depending on the platform, you may want to use either
@@ -15,22 +13,39 @@ void main() async {
   /// 2- var client = newClient(config,  BrowserClient());
   final client = SiriusClient.fromUrl(baseUrl, null);
 
-  /// Returns transaction information given a transactionId or hash.
-  const hash1 = 'FA76AE792C25838A3B025A5883E287BC2A24AABA76832E5CC209F3E27DC816A1';
-  const hash2 = '07CC9EAB83D182AE036B1FADD5EE4A343E2CBFD965784D4CB28B6A9B6C582508';
+  const hashOne = 'B090128A7D4D2C317B964C6951C0CD7C48899A40C5F936221159A288E4C77B93';
+  const hashTwo = 'FF91ABCF52C042A77F0B35BD6E629A0E8932839FC1D23A894B4F8642211A0F21';
 
   try {
-    final result = await client.transaction.getTransaction(hash1);
+    /// Get a transaction information given a transactionId or hash.
+    final result = await client.transaction.getTransaction(hashOne);
     print(result);
   } on Exception catch (e) {
     print('Exception when calling Transaction->GetTransaction: $e\n');
   }
 
-  /// Returns transaction information given a TransactionIds object.
   try {
-    final result = await client.transaction.getTransactionsStatuses([hash1, hash2]);
+    /// Get a List of [Transaction] information for a given List of transactionIds.
+    final result = await client.transaction.getTransactions([hashOne,hashTwo]);
     print(result);
   } on Exception catch (e) {
-    print('Exception when calling Transaction->GetTransactionsStatuses: $e\n');
+    print('Exception when calling Transaction->GetTransactions: $e\n');
+  }
+
+  try {
+    /// Get the transaction status for a given hash.
+    final result = await client.transaction.getTransactionStatus(hashOne);
+    print(result);
+  } on Exception catch (e) {
+    print('Exception when calling Transaction->getTransactionStatus: $e\n');
+  }
+
+  try {
+    /// Get transactions status.
+    final result = await client.transaction.getTransactionsStatuses([hashOne,hashTwo]);
+    print(result);
+  } on Exception catch (e) {
+    print('Exception when calling Transaction->getTransactionStatus: $e\n');
   }
 }
+
