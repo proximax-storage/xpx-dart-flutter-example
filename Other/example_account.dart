@@ -19,12 +19,13 @@ void main() async {
 
   /// Create an Address from a given public key.
   final addressOne = Address.fromPublicKey(
-      'C64FA80DB046F488CC1C480454834D4CAE8284DDC14D6E93332AD02E345FF2C5',
+      'C64FA80DB046F488CC1C480454834D4CAE8284DDC14D6E93332AD02E345FF2C6',
       networkType);
 
   final addressTwo = Address.fromPublicKey(
       '72837FC53D330A289FBC3CC41A44DD52C0DBA25566BF6AD5FC03CDBC4FAD4CB4',
       networkType);
+  print(addressTwo);
 
   try {
     /// Get AccountInfo for an account.
@@ -43,6 +44,6 @@ void main() async {
     var result = await client.account.getAccountsInfo(adds);
     print(result);
   } catch (e) {
-    print("Exception when calling Account->GetAccountInfo: $e\n");
+    print("Exception when calling Account->GetAccountsInfo: $e\n");
   }
 }

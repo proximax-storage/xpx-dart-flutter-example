@@ -1,41 +1,51 @@
 import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
-const baseUrl = 'http://bctestnet1.xpxsirius.io:3000';
-
-const networkType = publicTest;
-
 /// Simple Account API AnnounceTransaction
 void main() async {
-  var config = Config(baseUrl, networkType);
+  const baseUrl = 'http://bctestnet2.brimstone.xpxsirius.io:3000';
 
-  var client = ApiClient.fromConf(config, null);
+  /// Creating a client instance
+  /// xpx_chain_sdk uses the Dart's native HttpClient.
+  /// Depending on the platform, you may want to use either
+  /// the one which comes from dart:io or the BrowserClient
+  /// example:
+  /// 1- import 'package:http/browser_client.dart';
+  /// 2- var client = newClient(config,  BrowserClient());
+  final client = SiriusClient.fromUrl(baseUrl, null);
+
+  final generationHash = await client.generationHash;
+
+  final networkType = await client.networkType;
 
   /// Create an Account from a given Private key.
-  var account = Account.fromPrivateKey(
-      '1ACE45EAD3C2F0811D9F4355F35BF78483324975083BE4E503EA49DFFEA691A0',
+  final account = Account.fromPrivateKey(
+      '5D39DFFB41BB92C5932C29BAB4E1E5AC2C1901784BF008DC937A8A460B925331',
       networkType);
 
   /// Create an Address from a given Public key.
-  var recipient = Address.fromPublicKey(
-      '68f50e10e5b8be2b7e9ddb687a667d6e94dd55fe02b4aed8195f51f9a242558c',
-      networkType);
+  final recipient =
+      Address.fromRawAddress('VC4XVXBWAR4JQ3NHCKS7PUHPZJKLXSWRVYXMDWW7');
 
   /// Create a  transaction type transfer
-  var tx = TransferTransaction(
+  final tx = TransferTransaction(
       // The maximum amount of time to include the transaction in the blockchain.
       Deadline(hours: 1),
       // The Address of the recipient account.
       recipient,
       // The List of mosaic to be sent.
-      [xpx(15)],
+      [xpx(10)],
       // The transaction message of 1024 characters.
-      Message.plainMessage('From ProximaX Dart SDK'),
+      PlainMessage(payload: 'From ProximaX Dart SDK'),
       networkType);
 
-  var stx = account.sign(tx);
+  final stx = account.sign(tx, generationHash);
 
-  var restTx = await client.transaction.announce(stx);
-  print(restTx);
-  print('Hash: ${stx.hash}');
-  print('Signer: ${account.publicAccount.publicKey}');
+  try {
+    final restTx = await client.transaction.announce(stx);
+    print(restTx);
+    print('Hash: ${stx.hash}');
+    print('Signer: ${account.publicAccount.publicKey}');
+  } on Exception catch (e) {
+    print('Exception when calling Transaction->Announce: $e\n');
+  }
 }

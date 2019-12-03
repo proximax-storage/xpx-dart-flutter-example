@@ -1,19 +1,27 @@
 import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
-const baseUrl = 'http://bctestnet1.xpxsirius.io:3000';
+const baseUrl = 'http://bctestnet2.brimstone.xpxsirius.io:3000';
 
 const networkType = publicTest;
 
 /// Simple Account API AnnounceTransaction
 void main() async {
-  final config = Config(baseUrl, networkType);
 
-  final client = ApiClient.fromConf(config, null);
+  /// Creating a client instance
+  /// xpx_chain_sdk uses the Dart's native HttpClient.
+  /// Depending on the platform, you may want to use either
+  /// the one which comes from dart:io or the BrowserClient
+  /// example:
+  /// 1- import 'package:http/browser_client.dart';
+  /// 2- var client = newClient(config,  BrowserClient());
+  final client = SiriusClient.fromUrl(baseUrl, null);
 
   /// Create an Account from a given Private key.
   final account = Account.fromPrivateKey(
-      '1ACE45EAD3C2F0811D9F4355F35BF78483324975083BE4E503EA49DFFEA691A0',
+      '5D39DFFB41BB92C5932C29BAB4E1E5AC2C1901784BF008DC937A8A460B925331',
       networkType);
+
+  final generationHash = await client.generationHash;
 
   /// Create a Mosaic Supply Change transaction.
   final mosaicSupplyChange = MosaicSupplyChangeTransaction(
@@ -25,10 +33,14 @@ void main() async {
       // The network type
       networkType);
 
-  final stx = account.sign(mosaicSupplyChange);
+  final stx = account.sign(mosaicSupplyChange, generationHash);
 
-  final restTx = await client.transaction.announce(stx);
-  print(restTx);
-  print('Hash: ${stx.hash}');
-  print('Signer: ${account.publicAccount.publicKey}');
+  try {
+    final restTx = await client.transaction.announce(stx);
+    print(restTx);
+    print('Hash: ${stx.hash}');
+    print('Signer: ${account.publicAccount.publicKey}');
+  } on Exception catch (e) {
+    print('Exception when calling Transaction->Announce: $e\n');
+  }
 }

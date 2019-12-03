@@ -1,14 +1,21 @@
 import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
-const baseUrl = 'http://bctestnet1.xpxsirius.io:3000';
+const baseUrl = 'http://bctestnet2.brimstone.xpxsirius.io:3000';
 
 const networkType = publicTest;
 
 /// Simple Account API AnnounceTransaction
 void main() async {
-  final config = Config(baseUrl, networkType);
+  /// Creating a client instance
+  /// xpx_chain_sdk uses the Dart's native HttpClient.
+  /// Depending on the platform, you may want to use either
+  /// the one which comes from dart:io or the BrowserClient
+  /// example:
+  /// 1- import 'package:http/browser_client.dart';
+  /// 2- var client = newClient(config,  BrowserClient());
+  final client = SiriusClient.fromUrl(baseUrl, null);
 
-  final client = ApiClient.fromConf(config, null);
+  final generationHash = await client.generationHash;
 
   /// Create an Account from a given Private key.
   final accountOne = Account.fromPrivateKey(
@@ -31,7 +38,7 @@ void main() async {
       // The List of mosaic to be sent.
       [xpx(52)],
       // The transaction message of 1024 characters.
-      Message.plainMessage("Let's exchange 10 xpx -> 20 xem"),
+      PlainMessage(payload: "Let's exchange 10 xpx -> 20 xem"),
       networkType);
 
   /// Create a  transaction type transfer
@@ -43,7 +50,7 @@ void main() async {
       // The List of mosaic to be sent.
       [xpx(20)],
       // The transaction message of 1024 characters.
-      Message.plainMessage('Okay'),
+      PlainMessage(payload: 'Okay'),
       networkType);
 
   ttxOne.toAggregate = accountOne.publicAccount;
@@ -53,7 +60,7 @@ void main() async {
   final aggregateTransaction =
       AggregateTransaction.bonded(deadline, [ttxOne, ttxTwo], networkType);
 
-  final signedTransaction = accountOne.sign(aggregateTransaction);
+  final signedAggregate = accountOne.sign(aggregateTransaction, generationHash);
 
   final lockFundsTransaction = LockFundsTransaction(
       // The maximum amount of time to include the transaction in the blockchain.
@@ -63,35 +70,40 @@ void main() async {
       // Duration
       BigInt.from(100),
       // Aggregate bounded transaction for lock
-      signedTransaction,
+      signedAggregate,
       networkType);
 
-  final signedLock = accountOne.sign(lockFundsTransaction);
+  final signedLock = accountOne.sign(lockFundsTransaction, generationHash);
 
-  final restTxLock = await client.transaction.announce(signedLock);
-  print(restTxLock);
-  print('HashLock: ${signedLock.hash}');
-  print('Signer: ${accountOne.publicAccount.publicKey}');
+  try {
+    final restLockFundsTx = await client.transaction.announce(signedLock);
+    print(restLockFundsTx);
+    print('Hash: ${signedLock.hash}');
+    print('Signer: ${accountOne.publicAccount.publicKey}');
+  } on Exception catch (e) {
+    print('Exception when calling Transaction->Announce: $e\n');
+  }
 
-  for (var i = 0; i <= 20; i++) {
-    await new Future.delayed(const Duration(seconds: 2));
+  int number = 0;
+  while (number == 1) {
+    await new Future.delayed(const Duration(seconds: 3));
     final status =
         await client.transaction.getTransactionStatus(signedLock.hash);
-    if (status.status == 'Success') {
-      if (status.group == 'confirmed') {
-        print('Status: ${status.group}');
-        final restTx =
-            await client.transaction.announceAggregateBonded(signedTransaction);
-        print(restTx);
-        print('HashTxn: ${signedTransaction.hash}');
+    if (status.status == 'Success' && status.group == 'confirmed') {
+      print('Status: ${status.group} \n');
+      try {
+        final restAggregateTx =
+            await client.transaction.announceAggregateBonded(signedAggregate);
+        print(restAggregateTx);
+        print('Hash: ${signedAggregate.hash}');
         print('Signer: ${accountOne.publicAccount.publicKey}');
-        return;
-      } else {
-        print('Status: ${status.group}');
+      } on Exception catch (e) {
+        print(
+            'Exception when calling Transaction->AnnounceAggregateBonded: $e\n');
       }
+      number = 1;
     } else {
-      print('Status: $status');
-      return;
+      print('Status: ${status.group}');
     }
   }
 }

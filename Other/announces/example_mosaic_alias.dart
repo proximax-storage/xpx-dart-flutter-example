@@ -4,9 +4,8 @@ const baseUrl = 'http://bctestnet2.brimstone.xpxsirius.io:3000';
 
 const networkType = publicTest;
 
-/// Simple Account API AnnounceTransaction
+/// Simple Transactions API request
 void main() async {
-
   /// Creating a client instance
   /// xpx_chain_sdk uses the Dart's native HttpClient.
   /// Depending on the platform, you may want to use either
@@ -18,32 +17,29 @@ void main() async {
 
   final generationHash = await client.generationHash;
 
-  /// Create an Account from a given Private key.
-  final account = Account.fromPrivateKey(
+  final deadline = Deadline(hours: 1);
+
+  final addressTwo = Account.fromPrivateKey(
       '5D39DFFB41BB92C5932C29BAB4E1E5AC2C1901784BF008DC937A8A460B925331',
       networkType);
 
-  /// Create a Mosaic definition transaction.
-  final mosaicDefinition = MosaicDefinitionTransaction(
-    // The maximum amount of time to include the transaction in the blockchain.
-      Deadline(hours: 1),
-      mosaicNonce(),
-      account.publicAccount.publicKey,
-      MosaicProperties(true, true, 4, BigInt.from(10000)),
-      // The network type
-      networkType);
+  /// Define the namespaceId and the mosaicId you want to link.
+  final namespaceId = NamespaceId.fromName('dartnamespace');
+  final mosaicId = MosaicId.fromHex('1CD789616604883F');
 
-  print(mosaicDefinition.mosaicId.id);
+  /// Create MosaicAliasTransaction.
+  /// note: If you want to unlink the alias, change alias action type to AliasActionType.unlink.
+  final mosaicAliasTransaction = MosaicAliasTransaction(
+      deadline, mosaicId, namespaceId, AliasActionType.aliasUnlink, networkType);
 
-  final stx = account.sign(mosaicDefinition, generationHash);
+  final stx = addressTwo.sign(mosaicAliasTransaction, generationHash);
 
   try {
     final restTx = await client.transaction.announce(stx);
     print(restTx);
-    print('Hash: ${stx.hash}');
-    print('Signer: ${account.publicAccount.publicKey}');
+    print('HashTxn: ${stx.hash}');
+    print('Signer: ${addressTwo.publicKey}');
   } on Exception catch (e) {
     print('Exception when calling Transaction->Announce: $e\n');
   }
 }
-

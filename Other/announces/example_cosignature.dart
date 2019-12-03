@@ -1,13 +1,11 @@
 import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
-/// Simple Account API request
+const baseUrl = 'http://bctestnet2.brimstone.xpxsirius.io:3000';
+
+const networkType = publicTest;
+
+/// Simple Transactions API request
 void main() async {
-  const baseUrl = 'http://bctestnet1.xpxsirius.io:3000';
-
-  const networkType = publicTest;
-
-  final config = Config(baseUrl, networkType);
-
   /// Creating a client instance
   /// xpx_chain_sdk uses the Dart's native HttpClient.
   /// Depending on the platform, you may want to use either
@@ -15,10 +13,10 @@ void main() async {
   /// example:
   /// 1- import 'package:http/browser_client.dart';
   /// 2- var client = newClient(config,  BrowserClient());
-  final client = ApiClient.fromConf(config, null);
+  final client = SiriusClient.fromUrl(baseUrl, null);
 
   final addressTwo = Account.fromPrivateKey(
-      '1ACE45EAD3C2F0811D9F4355F35BF78483324975083BE4E503EA49DFFEA691A0',
+      '29CF06338133DEE64FC49BCB19C8936916DBE8DC461CE489BF9588BE3B9670B5',
       networkType);
 
   try {
@@ -30,11 +28,15 @@ void main() async {
 
       final signedTransaction = addressTwo.signCosignatureTransaction(d);
 
-      final restTx = await client.transaction
-          .announceAggregateBondedCosignature(signedTransaction);
-      print(restTx);
-      print('HashTxn: ${signedTransaction.hash}');
-      print('Signer: ${addressTwo.publicKey}');
+      try {
+        final restTx = await client.transaction
+            .announceAggregateBondedCosignature(signedTransaction);
+        print(restTx);
+        print('HashTxn: ${signedTransaction.hash}');
+        print('Signer: ${addressTwo.publicKey}');
+      } on Exception catch (e) {
+        print('Exception when calling Transaction->Announce: $e\n');
+      }
     }
   } on Exception catch (e) {
     print('Exception when calling Account->GetAccountInfo: $e\n');

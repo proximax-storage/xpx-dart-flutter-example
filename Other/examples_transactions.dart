@@ -2,12 +2,9 @@ import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
 /// Simple Transactions API request
 void main() async {
+  const baseUrl = 'http://bctestnet2.brimstone.xpxsirius.io:3000';
 
-  const baseUrl = 'http://bctestnet1.xpxsirius.io:3000';
-
-  final networkType = publicTest;
-
-  final config =  Config(baseUrl, networkType);
+  const networkType = publicTest;
 
   /// Creating a client instance
   /// xpx_chain_sdk uses the Dart's native HttpClient.
@@ -15,28 +12,25 @@ void main() async {
   /// the one which comes from dart:io or the BrowserClient
   /// example:
   /// 1- import 'package:http/browser_client.dart';
-  /// 2- var client = NewClient(config,  BrowserClient());
-  final client = ApiClient.fromConf(config, null);
+  /// 2- var client = newClient(config,  BrowserClient());
+  final client = SiriusClient.fromUrl(baseUrl, null);
 
   /// Returns transaction information given a transactionId or hash.
-  var hash = 'A19FCEBC0EDC3A862E81640B410EFAF2F67D8F22E43350EC9F03BFA35544ABB3';
+  const hash1 = 'FA76AE792C25838A3B025A5883E287BC2A24AABA76832E5CC209F3E27DC816A1';
+  const hash2 = '07CC9EAB83D182AE036B1FADD5EE4A343E2CBFD965784D4CB28B6A9B6C582508';
 
   try {
-    final result = await client.transaction.getTransaction(hash);
+    final result = await client.transaction.getTransaction(hash1);
     print(result);
-  } catch (e) {
+  } on Exception catch (e) {
     print('Exception when calling Transaction->GetTransaction: $e\n');
   }
 
   /// Returns transaction information given a TransactionIds object.
-  List<String> hashes =  [];
-  hashes.add("07CC9EAB83D182AE036B1FADD5EE4A343E2CBFD965784D4CB28B6A9B6C582508");
-  hashes.add("D72B60D83EAADC82764E700799E65DF19190B5FE36DF28512B7D8F2ED1CC147C");
-
   try {
-    final result = await client.transaction.getTransactionsStatuses(hashes);
+    final result = await client.transaction.getTransactionsStatuses([hash1, hash2]);
     print(result);
-  } catch (e) {
-    print("Exception when calling Transaction->GetTransactions: $e\n");
+  } on Exception catch (e) {
+    print('Exception when calling Transaction->GetTransactionsStatuses: $e\n');
   }
 }

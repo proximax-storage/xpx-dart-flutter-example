@@ -1,5 +1,5 @@
 name: xpx_chain_sdk_examples
-version: 0.0.1
+version: 0.0.2
 description: 'The ProximaX Sirius Chain Dart SDK examples.'
 author: 'Eleazar Garrido <eleazar.garrido@proximax.io>'
 homepage: https://www.proximax.io
@@ -9,7 +9,7 @@ environment:
 
 dependencies:
   xpx_crypto: '^0.0.1'
-  xpx_chain_sdk: '^0.0.3+4'
+  xpx_chain_sdk: '^0.0.4+1'
 
 dev_dependencies:
   build_runner: '>=0.8.10 <2.0.0'

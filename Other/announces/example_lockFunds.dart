@@ -1,14 +1,21 @@
 import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
-const baseUrl = 'http://bctestnet1.xpxsirius.io:3000';
+const baseUrl = 'http://bctestnet2.brimstone.xpxsirius.io:3000';
 
 const networkType = publicTest;
 
-/// Simple Account API AnnounceTransaction
+/// Simple Transactions API request
 void main() async {
-  final config = Config(baseUrl, networkType);
+  /// Creating a client instance
+  /// xpx_chain_sdk uses the Dart's native HttpClient.
+  /// Depending on the platform, you may want to use either
+  /// the one which comes from dart:io or the BrowserClient
+  /// example:
+  /// 1- import 'package:http/browser_client.dart';
+  /// 2- var client = newClient(config,  BrowserClient());
+  final client = SiriusClient.fromUrl(baseUrl, null);
 
-  final client = ApiClient.fromConf(config, null);
+  final generationHash = await client.generationHash;
 
   /// Create an Account from a given Private key.
   final account = Account.fromPrivateKey(
@@ -19,21 +26,24 @@ void main() async {
 
   /// Create a transaction type HashLock.
   final lockFundsTransaction = LockFundsTransaction(
-      // The maximum amount of time to include the transaction in the blockchain.
+    // The maximum amount of time to include the transaction in the blockchain.
       deadline,
       // Funds to lock
       xpxRelative(10),
       // Duration
       BigInt.from(100),
       // Aggregate bounded transaction for lock
-      SignedTransaction(0x4241, 'payload',
-          '8498B38D89C1DC8A448EA5824938FF828926CD9F7747B1844B59B4B6807E878B'),
+      aggregateSign,
       networkType);
 
-  final stx = account.sign(lockFundsTransaction);
+  final lockFundsSign = account.sign(lockFundsTransaction, generationHash);
 
-  final restTx = await client.transaction.announce(stx);
-  print(restTx);
-  print('Hash: ${stx.hash}');
-  print('Signer: ${account.publicAccount.publicKey}');
+  try {
+    final restLockFundsTx = await client.transaction.announce(lockFundsSign);
+    print(restLockFundsTx);
+    print('Hash: ${lockFundsSign.hash}');
+    print('Signer: ${account.publicAccount.publicKey}');
+  } on Exception catch (e) {
+    print('Exception when calling Transaction->Announce: $e\n');
+  }
 }
