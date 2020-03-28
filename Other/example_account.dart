@@ -2,7 +2,7 @@ import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
 /// Simple Account API request
 void main() async {
-  const baseUrl = 'http://bctestnet2.brimstone.xpxsirius.io:3000';
+  const baseUrl = 'http://bctestnetswap.xpxsirius.io:3000';
 
   const networkType = publicTest;
 
@@ -17,7 +17,7 @@ void main() async {
 
   /// Create an PublicAccount from a given public key.
   final accountOne = PublicAccount.fromPublicKey(
-      '0D5248B9F8A9F8182DD2379F90F53906F054CC3A6C9FE621B291FD1212A7596A',
+      '3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF331368A4232FD5',
       networkType);
 
   /// Create an Address from a given public key.
@@ -37,7 +37,8 @@ void main() async {
   try {
     /// Get AccountInfo for multiple accounts.
     /// Param List Addresses - addresses to get info.
-    final result = await client.account.getAccountsInfo([accountOne.address, addressTwo]);
+    final result =
+        await client.account.getAccountsInfo([accountOne.address, addressTwo]);
     print(result);
   } on Exception catch (e) {
     print('Exception when calling Account->GetAccountsInfo: $e\n');
@@ -46,7 +47,7 @@ void main() async {
   try {
     /// Get confirmed transactions information.
     /// Public Account - account to get transactions associated.
-    final result = await client.account.transactions(accountOne);
+    final result = await client.account.getAccountInfo(accountOne.address);
     print(result);
   } on Exception catch (e) {
     print('Exception when calling Account->GetAccountsInfo: $e\n');
@@ -55,7 +56,7 @@ void main() async {
   try {
     /// Get incoming transactions information.
     /// Public Account - account to get transactions associated.
-    final result = await client.account.incomingTransactions(accountOne);
+    final result = await client.account.transactions(accountOne);
     print(result);
   } on Exception catch (e) {
     print('Exception when calling Account->IncomingTransactions: $e\n');
@@ -64,7 +65,8 @@ void main() async {
   /// Get outgoing transactions information.
   /// Public Account - account to get transactions associated.
   try {
-    final result = await client.account.outgoingTransactions(accountOne);
+    final result =
+        await client.account.outgoingTransactions(accountOne);
     print(result);
   } on Exception catch (e) {
     print('Exception when calling Account->OutgoingTransactions: $e\n');
@@ -73,7 +75,8 @@ void main() async {
   /// Get unconfirmed transactions information.
   /// Public Account - account to get transactions associated.
   try {
-    final result = await client.account.unconfirmedTransactions(accountOne);
+    final result =
+        await client.account.unconfirmedTransactions(accountOne);
     print(result);
   } on Exception catch (e) {
     print('Exception when calling Account->UnconfirmedTransactions: $e\n');

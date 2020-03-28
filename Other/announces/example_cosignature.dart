@@ -15,25 +15,25 @@ void main() async {
   /// 2- var client = newClient(config,  BrowserClient());
   final client = SiriusClient.fromUrl(baseUrl, null);
 
-  final addressTwo = Account.fromPrivateKey(
+  final accountTwo = Account.fromPrivateKey(
       '29CF06338133DEE64FC49BCB19C8936916DBE8DC461CE489BF9588BE3B9670B5',
       networkType);
 
   try {
     final result = await client.account
-        .aggregateBondedTransactions(addressTwo.publicAccount);
+        .aggregateBondedTransactions(accountTwo.publicAccount);
 
     for (final txn in result) {
       final d = CosignatureTransaction(txn);
 
-      final signedTransaction = addressTwo.signCosignatureTransaction(d);
+      final signedTransaction = accountTwo.signCosignatureTransaction(d);
 
       try {
         final restTx = await client.transaction
             .announceAggregateBondedCosignature(signedTransaction);
         print(restTx);
+        print('Signer: ${accountTwo.publicKey}');
         print('HashTxn: ${signedTransaction.hash}');
-        print('Signer: ${addressTwo.publicKey}');
       } on Exception catch (e) {
         print('Exception when calling Transaction->Announce: $e\n');
       }

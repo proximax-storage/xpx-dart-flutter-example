@@ -1,6 +1,6 @@
 import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
-const baseUrl = 'http://bctestnet2.brimstone.xpxsirius.io:3000';
+const baseUrl = 'http://bctestnet1.brimstone.xpxsirius.io:3000';
 
 const networkType = publicTest;
 
@@ -21,7 +21,7 @@ void main() async {
 
   /// Future multisig private key
   const multiSigPrivateKey =
-      '3B9560B5CB19C893694FC49B461CE489BF9588BE16DBE8DC29CF06338133DEE6';
+      '3B5560B5CB19C893694FC49B461CE489BF9588BE16DBE8DC29CF06338133DEE7';
 
   /// Cosignature public keys
   const cosignatoryOnePublicKey =
@@ -73,12 +73,12 @@ void main() async {
   final stx = multiSig.signWithCosignatures(aggregateTransaction,
       [cosignerOne, cosignerTwo, cosignerThree], generationHash);
 
-  try {
-    final restTx = await client.transaction.announce(stx);
-    print(restTx);
-    print('Hash: ${stx.hash}');
-    print('Signer: ${multiSig.publicAccount.publicKey}');
-  } on Exception catch (e) {
-    print('Exception when calling Transaction->Announce: $e\n');
-  }
+//  try {
+//    final restTx = await client.transaction.announce(stx);
+//    print(restTx);
+//    print('Signer: ${multiSig.publicAccount.publicKey}');
+//    print('HashTxn: ${stx.hash}');
+//  } on Exception catch (e) {
+//    print('Exception when calling Transaction->Announce: $e\n');
+//  }
 }

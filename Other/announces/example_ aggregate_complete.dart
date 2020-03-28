@@ -66,8 +66,8 @@ void main() async {
   try {
     final restTx = await client.transaction.announce(stx);
     print(restTx);
-    print('Hash: ${stx.hash}');
     print('Signer: ${account.publicAccount.publicKey}');
+    print('HashTxn: ${stx.hash}');
   } on Exception catch (e) {
     print('Exception when calling Transaction->Announce: $e\n');
   }

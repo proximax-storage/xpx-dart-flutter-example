@@ -34,11 +34,11 @@ void main() async {
     print('Exception when calling Namespace->GetNamespacesNames: $e\n');
   }
 
-  /// Gets an list of namespaces for a given account address.
   final address = Address.fromPublicKey(
       '93C3B9075649F59BD88573ADC55B8915B12390A47C76F0C45F362ED0800BE237',
       networkType);
 
+  /// Gets an list of namespaces for a given account address.
   try {
     final result = await client.namespace.getNamespacesFromAccount(address);
     print(result);
@@ -48,7 +48,6 @@ void main() async {
   print('\n');
 
   /// Gets namespaces for a given array of addresses.
-
   try {
     final result = await client.namespace.getNamespacesFromAccounts([address]);
     print(result);

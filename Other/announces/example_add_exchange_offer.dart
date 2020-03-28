@@ -1,8 +1,8 @@
 import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
-/// Simple Account API AnnounceTransaction
+/// Simple Transactions API request
 void main() async {
-  const baseUrl = 'http://bctestnet1.brimstone.xpxsirius.io:3000';
+  const baseUrl = 'http://bcstage1.xpxsirius.io:3000';
 
   /// Creating a client instance
   /// xpx_chain_sdk uses the Dart's native HttpClient.
@@ -17,30 +17,28 @@ void main() async {
 
   final networkType = await client.networkType;
 
-  /// Create an Account from a given Private key.
+  final deadline = Deadline(hours: 1);
+
   final account = Account.fromPrivateKey(
-      '5D39DFFB41BB92C5932C29BAB4E1E5AC2C1901784BF008DC937A8A460B925331',
+      '63485A29E5D1AA15696095DCE792AACD014B85CBC8E473803406DEE20EC71958',
       networkType);
 
-  /// Create a Mosaic definition transaction.
-  final mosaicDefinition = MosaicDefinitionTransaction(
-    // The maximum amount of time to include the transaction in the blockchain.
-      Deadline(hours: 1),
-      mosaicNonce(),
-      account.publicAccount.publicKey,
-      MosaicProperties(true, true, 4, Uint64.zero),
-      // The network type
+  final mosaic = Mosaic(MosaicId.fromHex('4D99247A12F64217'), Uint64(50));
+
+  /// Create AddExchangeOfferTransaction.
+  final addExchangeOfferTxn = AddExchangeOfferTransaction(
+      deadline,
+      [AddOffer(offer: Offer(buyOffer, mosaic, Uint64(50)), duration: Uint64(1000))],
       networkType);
 
-  final stx = account.sign(mosaicDefinition, generationHash);
+  final signedAddExchangeOffer = account.sign(addExchangeOfferTxn, generationHash);
 
   try {
-    final restTx = await client.transaction.announce(stx);
-    print(restTx);
+    final restAddExchangeOffer = await client.transaction.announce(signedAddExchangeOffer);
+    print(restAddExchangeOffer);
     print('Signer: ${account.publicAccount.publicKey}');
-    print('HashTxn: ${stx.hash}');
+    print('HashTxn: ${signedAddExchangeOffer.hash}');
   } on Exception catch (e) {
     print('Exception when calling Transaction->Announce: $e\n');
   }
 }
-

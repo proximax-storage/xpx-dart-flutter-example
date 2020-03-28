@@ -1,11 +1,9 @@
 import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
-const baseUrl = 'http://bctestnet2.brimstone.xpxsirius.io:3000';
-
-const networkType = publicTest;
-
-/// Simple Account API AnnounceTransaction
+/// Simple Transactions API request
 void main() async {
+  const baseUrl = 'http://bcstage1.xpxsirius.io:3000';
+
   /// Creating a client instance
   /// xpx_chain_sdk uses the Dart's native HttpClient.
   /// Depending on the platform, you may want to use either
@@ -17,50 +15,33 @@ void main() async {
 
   final generationHash = await client.generationHash;
 
-  /// Create an Account from a given Private key.
-  final accountOne = Account.fromPrivateKey(
-      '1ACE45EAD3C2F0811D9F4355F35BF78483324975083BE4E503EA49DFFEA691A0',
-      networkType);
-
-  /// Create an Address from a given Public key.
-  final accountTwo = PublicAccount.fromPublicKey(
-      '68f50e10e5b8be2b7e9ddb687a667d6e94dd55fe02b4aed8195f51f9a242558c',
-      networkType);
+  final networkType = await client.networkType;
 
   final deadline = Deadline(hours: 1);
 
-  /// Create a  transaction type transfer
-  final ttxOne = TransferTransaction(
-      // The maximum amount of time to include the transaction in the blockchain.
-      deadline,
-      // The Address of the recipient account.
-      accountTwo.address,
-      // The List of mosaic to be sent.
-      [xpx(52)],
-      // The transaction message of 1024 characters.
-      PlainMessage(payload: "Let's exchange 10 xpx -> 20 xem"),
+  final account = Account.fromPrivateKey(
+      '63485A29E5D1AA15696095DCE792AACD014B85CBC8E473803406DEE20EC71958',
       networkType);
 
-  /// Create a  transaction type transfer
-  final ttxTwo = TransferTransaction(
-      // The maximum amount of time to include the transaction in the blockchain.
-      deadline,
-      // The Address of the recipient account.
-      accountOne.publicAccount.address,
-      // The List of mosaic to be sent.
-      [xpx(20)],
-      // The transaction message of 1024 characters.
-      PlainMessage(payload: 'Okay'),
+  final p = PublicAccount.fromPublicKey(
+      '9A49366406ACA952B88BADF5F1E9BE6CE4968141035A60BE503273EA65456B24',
       networkType);
 
-  ttxOne.toAggregate = accountOne.publicAccount;
-  ttxTwo.toAggregate = accountTwo;
+  final ms = Mosaic(storageNamespaceId, Uint64(2));
 
-  // Create Aggregate complete transaction.
+  /// Create AddExchangeOfferTransaction.
+  final addExchangeOfferTxn = AddExchangeOfferTransaction(
+      deadline,
+      [AddOffer(offer: Offer(sellOffer, ms, Uint64(2)), duration: Uint64(1))],
+      networkType);
+
+  addExchangeOfferTxn.toAggregate = p;
+
+  /// Create Aggregate complete transaction.
   final aggregateTransaction =
-      AggregateTransaction.bonded(deadline, [ttxOne, ttxTwo], networkType);
+      AggregateTransaction.bonded(deadline, [addExchangeOfferTxn], networkType);
 
-  final signedAggregate = accountOne.sign(aggregateTransaction, generationHash);
+  final signedAggregate = account.sign(aggregateTransaction, generationHash);
 
   final lockFundsTransaction = LockFundsTransaction(
       // The maximum amount of time to include the transaction in the blockchain.
@@ -73,12 +54,12 @@ void main() async {
       signedAggregate,
       networkType);
 
-  final signedLock = accountOne.sign(lockFundsTransaction, generationHash);
+  final signedLock = account.sign(lockFundsTransaction, generationHash);
 
   try {
     final restLockFundsTx = await client.transaction.announce(signedLock);
     print(restLockFundsTx);
-    print('Signer Lock: ${accountOne.publicAccount.publicKey}');
+    print('Signer Lock: ${account.publicAccount.publicKey}');
     print('Hash Lock: ${signedLock.hash}');
   } on Exception catch (e) {
     print('Exception when calling Transaction->Announce: $e\n');
@@ -86,7 +67,7 @@ void main() async {
 
   int number = 0;
   while (number == 0) {
-    await new Future.delayed(const Duration(seconds: 3));
+    await new Future.delayed(const Duration(seconds: 10));
     final status =
         await client.transaction.getTransactionStatus(signedLock.hash);
     if (status.status == 'Success' && status.group == 'confirmed') {
@@ -95,7 +76,7 @@ void main() async {
         final restAggregateTx =
             await client.transaction.announceAggregateBonded(signedAggregate);
         print(restAggregateTx);
-        print('Signer: ${accountOne.publicAccount.publicKey}');
+        print('Signer: ${account.publicAccount.publicKey}');
         print('HashTxn: ${signedAggregate.hash}');
       } on Exception catch (e) {
         print(

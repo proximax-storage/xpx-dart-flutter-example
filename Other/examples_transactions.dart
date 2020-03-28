@@ -2,7 +2,7 @@ import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
 /// Simple Transactions API request
 void main() async {
-  const baseUrl = 'http://bctestnet2.brimstone.xpxsirius.io:3000';
+  const baseUrl = 'http://bctestnet3.brimstone.xpxsirius.io:3000';
 
   /// Creating a client instance
   /// xpx_chain_sdk uses the Dart's native HttpClient.
@@ -13,13 +13,13 @@ void main() async {
   /// 2- var client = newClient(config,  BrowserClient());
   final client = SiriusClient.fromUrl(baseUrl, null);
 
-  const hashOne = 'B090128A7D4D2C317B964C6951C0CD7C48899A40C5F936221159A288E4C77B93';
+  const hashOne = '2975066EE949F1C5BE008625E74BF71F9F62E39382FEF73F5371B86879008EF5';
   const hashTwo = 'FF91ABCF52C042A77F0B35BD6E629A0E8932839FC1D23A894B4F8642211A0F21';
 
   try {
     /// Get a transaction information given a transactionId or hash.
     final result = await client.transaction.getTransaction(hashOne);
-    print(result);
+    print(result.toJson());
   } on Exception catch (e) {
     print('Exception when calling Transaction->GetTransaction: $e\n');
   }

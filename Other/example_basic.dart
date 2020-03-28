@@ -3,7 +3,12 @@ import 'package:xpx_chain_sdk/xpx_sdk.dart';
 /// Simple Generate Account
 void main() async {
 
-  const networkType = publicTest;
+  const networkType = mijin;
+
+  final id = Uint64(50);
+
+
+  print(id.toBytes());
 
   const privateKey =
       '1ACE45EAD3C2F0811D9F4355F35BF78483324975083BE4E503EA49DFFEA691A0';

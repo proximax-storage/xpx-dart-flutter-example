@@ -18,49 +18,46 @@ void main() async {
   final generationHash = await client.generationHash;
 
   /// Create an Account from a given Private key.
-  final accountOne = Account.fromPrivateKey(
-      '1ACE45EAD3C2F0811D9F4355F35BF78483324975083BE4E503EA49DFFEA691A0',
+  final accountOne = PublicAccount.fromPublicKey(
+      '3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF331368A4232FD5',
       networkType);
 
   /// Create an Address from a given Public key.
-  final accountTwo = PublicAccount.fromPublicKey(
-      '68f50e10e5b8be2b7e9ddb687a667d6e94dd55fe02b4aed8195f51f9a242558c',
+  final accountTwo = Account.fromPrivateKey(
+      '99855252F26630133E9080CA4BC73B163A9F6B43B14B98D183C4A793A40AF468',
       networkType);
 
   final deadline = Deadline(hours: 1);
 
-  /// Create a  transaction type transfer
-  final ttxOne = TransferTransaction(
-      // The maximum amount of time to include the transaction in the blockchain.
-      deadline,
-      // The Address of the recipient account.
-      accountTwo.address,
-      // The List of mosaic to be sent.
-      [xpx(52)],
-      // The transaction message of 1024 characters.
-      PlainMessage(payload: "Let's exchange 10 xpx -> 20 xem"),
+  /// Create a Mosaic definition transaction.
+  final mosaicDefinition = MosaicDefinitionTransaction(
+    // The maximum amount of time to include the transaction in the blockchain.
+      Deadline(hours: 1),
+      mosaicNonce(),
+      accountOne.publicKey,
+      MosaicProperties(true, true, 4, Uint64.zero),
+      // The network type
       networkType);
 
-  /// Create a  transaction type transfer
-  final ttxTwo = TransferTransaction(
-      // The maximum amount of time to include the transaction in the blockchain.
-      deadline,
-      // The Address of the recipient account.
-      accountOne.publicAccount.address,
-      // The List of mosaic to be sent.
-      [xpx(20)],
-      // The transaction message of 1024 characters.
-      PlainMessage(payload: 'Okay'),
+  mosaicDefinition.toAggregate = accountOne;
+
+  /// Create a Mosaic Supply Change transaction.
+  final mosaicSupplyChange = MosaicSupplyChangeTransaction(
+    // The maximum amount of time to include the transaction in the blockchain.
+      Deadline(hours: 1),
+      increase,
+      mosaicDefinition.mosaicId,
+      Uint64(100000000000),
+      // The network type
       networkType);
 
-  ttxOne.toAggregate = accountOne.publicAccount;
-  ttxTwo.toAggregate = accountTwo;
+  mosaicSupplyChange.toAggregate = accountOne;
 
   // Create Aggregate complete transaction.
   final aggregateTransaction =
-      AggregateTransaction.bonded(deadline, [ttxOne, ttxTwo], networkType);
+      AggregateTransaction.bonded(deadline, [mosaicDefinition, mosaicSupplyChange], networkType);
 
-  final signedAggregate = accountOne.sign(aggregateTransaction, generationHash);
+  final signedAggregate = accountTwo.sign(aggregateTransaction, generationHash);
 
   final lockFundsTransaction = LockFundsTransaction(
       // The maximum amount of time to include the transaction in the blockchain.
@@ -73,29 +70,29 @@ void main() async {
       signedAggregate,
       networkType);
 
-  final signedLock = accountOne.sign(lockFundsTransaction, generationHash);
+  final signedLock = accountTwo.sign(lockFundsTransaction, generationHash);
 
   try {
     final restLockFundsTx = await client.transaction.announce(signedLock);
     print(restLockFundsTx);
-    print('Signer Lock: ${accountOne.publicAccount.publicKey}');
-    print('Hash Lock: ${signedLock.hash}');
+    print('Lock Hash: ${signedLock.hash}');
+    print('Lock Signer: ${accountTwo.publicAccount.publicKey}');
   } on Exception catch (e) {
     print('Exception when calling Transaction->Announce: $e\n');
   }
 
   int number = 0;
   while (number == 0) {
-    await new Future.delayed(const Duration(seconds: 3));
+    await new Future.delayed(const Duration(seconds: 5));
     final status =
         await client.transaction.getTransactionStatus(signedLock.hash);
     if (status.status == 'Success' && status.group == 'confirmed') {
-      print('Status: ${status.group} \n');
+      print('Status: ${status.group}  ${status.group} \n');
       try {
         final restAggregateTx =
             await client.transaction.announceAggregateBonded(signedAggregate);
         print(restAggregateTx);
-        print('Signer: ${accountOne.publicAccount.publicKey}');
+        print('Signer: ${accountTwo.publicAccount.publicKey}');
         print('HashTxn: ${signedAggregate.hash}');
       } on Exception catch (e) {
         print(

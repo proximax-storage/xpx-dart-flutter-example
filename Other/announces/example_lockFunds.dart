@@ -31,19 +31,19 @@ void main() async {
       // Funds to lock
       xpxRelative(10),
       // Duration
-      BigInt.from(100),
+      Uint64(100),
       // Aggregate bounded transaction for lock
-      aggregateSign,
+      SignedTransaction(0x4241, '', '1731245d3bd7af58e065a6971e75845cc4a4cc5f102629c84f0dade6b2a8d56f'),
       networkType);
 
   final lockFundsSign = account.sign(lockFundsTransaction, generationHash);
 
-  try {
-    final restLockFundsTx = await client.transaction.announce(lockFundsSign);
-    print(restLockFundsTx);
-    print('Hash: ${lockFundsSign.hash}');
-    print('Signer: ${account.publicAccount.publicKey}');
-  } on Exception catch (e) {
-    print('Exception when calling Transaction->Announce: $e\n');
-  }
+//  try {
+//    final restLockFundsTx = await client.transaction.announce(lockFundsSign);
+//    print(restLockFundsTx);
+//    print('Signer: ${account.publicAccount.publicKey}');
+//    print('HashTxn: ${lockFundsSign.hash}');
+//  } on Exception catch (e) {
+//    print('Exception when calling Transaction->Announce: $e\n');
+//  }
 }

@@ -40,16 +40,14 @@ void main() async {
 
   /// Create an PublicAccount from a given Public key.
   final cosignerOne =
-  Account.fromPrivateKey(cosignatoryOnePrivateKey, networkType);
-
-  print(cosignerOne);
+      Account.fromPrivateKey(cosignatoryOnePrivateKey, networkType);
 
   final cosignerTwo =
-  Account.fromPrivateKey(cosignatoryTwoPrivateKey, networkType);
+      Account.fromPrivateKey(cosignatoryTwoPrivateKey, networkType);
 
   /// Create a  transaction type transfer
   final modifyMultiSigAccount = ModifyMultisigAccountTransaction(
-    // The maximum amount of time to include the transaction in the blockchain.
+      // The maximum amount of time to include the transaction in the blockchain.
       deadline,
       // The number of signatures needed to approve a transaction.
       minimalApproval,
@@ -71,12 +69,12 @@ void main() async {
 
   /// Create a transaction type HashLock.
   final lockFundsTransaction = LockFundsTransaction(
-    // The maximum amount of time to include the transaction in the blockchain.
+      // The maximum amount of time to include the transaction in the blockchain.
       deadline,
       // Funds to lock
       xpxRelative(10),
       // Duration
-      BigInt.from(100),
+      Uint64(100),
       // Aggregate bounded transaction for lock
       aggregateSign,
       networkType);
@@ -86,36 +84,40 @@ void main() async {
   try {
     final restLockFundsTx = await client.transaction.announce(lockFundsSign);
     print(restLockFundsTx);
-    print('Hash: ${lockFundsSign.hash}');
-    print('Signer: ${cosignerOne.publicAccount.publicKey}');
+    print('Signer Lock: ${cosignerOne.publicAccount.publicKey}');
+    print('Hash Lock: ${lockFundsSign.hash}');
   } on Exception catch (e) {
     print('Exception when calling Transaction->Announce: $e\n');
   }
 
-  for (var i = 0; i <= 30; i++) {
+  int number = 0;
+  while (number == 0) {
     await new Future.delayed(const Duration(seconds: 2));
     final status =
-    await client.transaction.getTransactionStatus(lockFundsSign.hash);
+        await client.transaction.getTransactionStatus(lockFundsSign.hash);
     if (status.status == 'Success') {
       if (status.group == 'confirmed') {
         print('Status: ${status.group}');
         try {
           final restAggregateTx =
-          await client.transaction.announceAggregateBonded(aggregateSign);
+              await client.transaction.announceAggregateBonded(aggregateSign);
           print(restAggregateTx);
-          print('Hash: ${aggregateSign.hash}');
           print('Signer: ${multiSig.publicAccount.publicKey}');
+          print('HashTxn: ${aggregateSign.hash}');
         } on Exception catch (e) {
           print(
               'Exception when calling Transaction->AnnounceAggregateBonded: $e\n');
         }
-        return;
+        number = 1;
       } else {
         print('Status: ${status.group}');
       }
     } else {
-      print('Status: $status');
-      return;
+      if (status.group == 'failed') {
+        print('LockFund Status: ${status.status}');
+        break;
+      }
+      print('LockFund Status: ${status.group}');
     }
   }
 }

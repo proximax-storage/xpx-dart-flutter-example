@@ -1,6 +1,6 @@
 import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
-const baseUrl = 'http://bctestnet2.brimstone.xpxsirius.io:3000';
+const baseUrl = 'http://bctestnet1.brimstone.xpxsirius.io:3000';
 
 const networkType = publicTest;
 
@@ -21,7 +21,7 @@ void main() async {
 
   /// Future multiSig private key
   const multiSigPrivateKey =
-      '3B7560B5CB19C893694FC49B461CE489BF9588BE16DBE8DC29CF06338133DEE6';
+      '3B7660B5CB19C893694FC49B461CE489BF9588BE16DBE8DC29CF06338133DEE7';
 
   /// Cosignature public keys
   const cosignatoryOnePrivateKey =
@@ -42,13 +42,13 @@ void main() async {
 
   /// Create an PublicAccount from a given Public key.
   final cosignerOne =
-      Account.fromPrivateKey(cosignatoryOnePrivateKey, networkType);
+      PublicAccount.fromPublicKey(cosignatoryOnePrivateKey, networkType);
 
   final cosignerTwo =
-      Account.fromPrivateKey(cosignatoryTwoPrivateKey, networkType);
+  PublicAccount.fromPublicKey(cosignatoryTwoPrivateKey, networkType);
 
   final cosignerThree =
-      Account.fromPrivateKey(cosignatoryThreePrivateKey, networkType);
+  PublicAccount.fromPublicKey(cosignatoryThreePrivateKey, networkType);
 
   /// Create a  transaction type transfer
   final modifyMultiSigAccount = ModifyMultisigAccountTransaction(
@@ -59,9 +59,9 @@ void main() async {
       // The number of signatures needed to remove a cosignatory.
       minimalRemoval,
       [
-        MultisigCosignatoryModification(add, cosignerOne.publicAccount),
-        MultisigCosignatoryModification(add, cosignerTwo.publicAccount),
-        MultisigCosignatoryModification(add, cosignerThree.publicAccount),
+        MultisigCosignatoryModification(remove, cosignerOne),
+        MultisigCosignatoryModification(remove, cosignerTwo),
+        MultisigCosignatoryModification(remove, cosignerThree),
       ],
       networkType);
 
@@ -79,9 +79,9 @@ void main() async {
       // The maximum amount of time to include the transaction in the blockchain.
       deadline,
       // Funds to lock
-      xpxRelative(10),
+      xpxRelative(1),
       // Duration
-      BigInt.from(100),
+      Uint64(100),
       // Aggregate bounded transaction for lock
       aggregateSign,
       networkType);
@@ -91,14 +91,14 @@ void main() async {
   try {
     final restLockFundsTx = await client.transaction.announce(lockFundsSign);
     print(restLockFundsTx);
-    print('Hash: ${lockFundsSign.hash}');
-    print('Signer: ${multiSig.publicAccount.publicKey}');
+    print('Signer Lock: ${multiSig.publicAccount.publicKey}');
+    print('Hash Lock: ${lockFundsSign.hash}');
   } on Exception catch (e) {
     print('Exception when calling Transaction->Announce: $e\n');
   }
 
   int number = 0;
-  while (number == 1) {
+  while (number == 0) {
     await new Future.delayed(const Duration(seconds: 3));
     final status =
         await client.transaction.getTransactionStatus(lockFundsSign.hash);
@@ -108,15 +108,19 @@ void main() async {
         final restAggregateTx =
             await client.transaction.announceAggregateBonded(aggregateSign);
         print(restAggregateTx);
-        print('Hash: ${aggregateSign.hash}');
         print('Signer: ${multiSig.publicAccount.publicKey}');
+        print('HashTxn: ${aggregateSign.hash}');
       } on Exception catch (e) {
         print(
             'Exception when calling Transaction->AnnounceAggregateBonded: $e\n');
       }
       number = 1;
     } else {
-      print('Status: ${status.group}');
+      if (status.group == 'failed') {
+        print('LockFund Status: ${status.status}');
+        break;
+      }
+      print('LockFund Status: ${status.group}');
     }
   }
 }

@@ -1,8 +1,9 @@
+import 'package:fixnum/fixnum.dart';
 import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
 /// Simple Account API AnnounceTransaction
 void main() async {
-  const baseUrl = 'http://bctestnet2.brimstone.xpxsirius.io:3000';
+  const baseUrl = 'http://bcstage1.xpxsirius.io:3000';
 
   /// Creating a client instance
   /// xpx_chain_sdk uses the Dart's native HttpClient.
@@ -19,12 +20,12 @@ void main() async {
 
   /// Create an Account from a given Private key.
   final account = Account.fromPrivateKey(
-      '5D39DFFB41BB92C5932C29BAB4E1E5AC2C1901784BF008DC937A8A460B925331',
+      '5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E',
       networkType);
 
   /// Create an Address from a given Public key.
   final recipient =
-      Address.fromRawAddress('VC4XVXBWAR4JQ3NHCKS7PUHPZJKLXSWRVYXMDWW7');
+      Address.fromRawAddress('VC4A3Z6ALFGJPYAGDK2CNE2JAXOMQKILYBVNLQFS');
 
   /// Create a  transaction type transfer
   final tx = TransferTransaction(
@@ -33,9 +34,9 @@ void main() async {
       // The Address of the recipient account.
       recipient,
       // The List of mosaic to be sent.
-      [xpx(10)],
+      [xpxRelative(2)],
       // The transaction message of 1024 characters.
-      PlainMessage(payload: 'From ProximaX Dart SDK'),
+      PlainMessage(payload: 'Transfer From ProximaX Rust SDK"'),
       networkType);
 
   final stx = account.sign(tx, generationHash);
@@ -43,8 +44,8 @@ void main() async {
   try {
     final restTx = await client.transaction.announce(stx);
     print(restTx);
-    print('Hash: ${stx.hash}');
     print('Signer: ${account.publicAccount.publicKey}');
+    print('HashTxn: ${stx.hash}');
   } on Exception catch (e) {
     print('Exception when calling Transaction->Announce: $e\n');
   }
