@@ -1,0 +1,48 @@
+{
+  "wallet_name": "jojoto",
+    "account_list": [{
+            "account_name": "Milton the Monster",
+            "account_address": "VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU",
+            "xpx_balance": "1,000.500000",
+            "usd_balance": "20.25",
+            "account_color": null,
+            "public_key": "3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF331368A4232FD5",
+            "private_key": "7BE211E102FB05440FF15C29039A1E013D686E0F7C57F7C4B544FB5CFECDFCBE",
+            "default": true,
+            "account_type": "algo"
+        },
+        {
+            "account_name": "Speed racer",
+            "account_address": "VC3I3FSQ354JT2QNS2XJ2J3OROCOBIRK6JB3BCBH",
+            "xpx_balance": "5.620000",
+            "usd_balance": "0.24",
+            "account_color": null,
+            "public_key": "93C3B9075649F59BD88573ADC55B8915B12390A47C76F0C45F362ED0800BE237",
+            "private_key": "88A73400A727AD0F7CA1B63AA6AD10861B326D050EB2627AC9C5A6151E3A03B1",
+            "default": false,
+          "account_type": "algo"
+        },
+        {
+            "account_name": "Ogon Bat",
+            "account_address": "VDR4GWPMNHRXZB6SKYLMMSKXF6LLK2BAXBN4LQC6",
+            "xpx_balance": "895.000000",
+            "usd_balance": "20.23",
+            "account_color": null,
+            "public_key": "BDBB41A79A06114A0F42E787369658A8EFA7F4F9B15946D69335D1221C819A5D",
+            "private_key": "6A0D89D035BBBE97947106D5EF095D64E93C9EECAAD989D8717A3278C6306C13",
+            "default": false,
+          "account_type": "algo"
+        },
+        {
+            "account_name": "Ultraman",
+            "account_address": "VCMUKZWJLFFMBRM3L5PMXNXAN7G7LH5CQW3LGFG4",
+            "xpx_balance": "1,892.220000",
+            "usd_balance": "20.22",
+            "account_color": null,
+            "public_key": "1E8BDC719ABA72FE28E85FA911FD19B2F3FE86B2170DD3897CD2916501C07C93",
+            "private_key": "A573CB56DFD506D6D77A67922E16515FC711C65F36D4D881FD08BC1996533397",
+            "default": false,
+          "account_type": "algo"
+        }
+    ]
+}
