@@ -36,13 +36,10 @@ class _AccountCreate extends State<AccountCreate> {
 
   @override
   Widget build(BuildContext context) {
-    print('PASO 011');
 
     bloc = BlocProvider.of<AccountBloc>(context);
-    print('PASO 012');
 
     final _newAccount = CardFront(account: _account);
-    print('PASO 013');
 
     final _accountName = StreamBuilder(
         stream: bloc.accountName,
@@ -60,7 +57,6 @@ class _AccountCreate extends State<AccountCreate> {
             ),
           );
         });
-    print('PASO 014');
 
     final _saveCard = StreamBuilder(
       stream: bloc.saveAccountValid,
