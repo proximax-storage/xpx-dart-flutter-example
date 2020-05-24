@@ -1,8 +1,8 @@
 import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
-/// Simple Account API AnnounceTransaction
+/// Simple Transactions API request
 void main() async {
-  const baseUrl = 'http://bctestnet3.brimstone.xpxsirius.io:3000';
+  const baseUrl = 'http://bctestnet1.brimstone.xpxsirius.io:3000';
 
   /// Creating a client instance
   /// xpx_chain_sdk uses the Dart's native HttpClient.

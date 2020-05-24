@@ -31,7 +31,7 @@ dependencies:
   intl: ^0.16.0
 
   # ProximaX Sirius Blockchain SDK.
-  xpx_chain_sdk: 0.0.5+1
+  xpx_chain_sdk: 0.0.5+2
 
   # Nicer logging
   logger: ^0.7.0+2

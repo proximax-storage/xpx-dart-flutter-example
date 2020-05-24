@@ -135,7 +135,7 @@ class _CardList extends State<DashBoard> with TickerProviderStateMixin {
       Container(
           height: screenHeightExcludingToolbar(context, dividedBy: 2.0),
           margin: const EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0),
-          child: new TabBarView(
+          child: TabBarView(
               controller: _controller,
               children: <Widget>[_mosaicsFrontList(context), Text('PLOMO')]))
     ]);

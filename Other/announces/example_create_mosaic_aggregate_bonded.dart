@@ -1,11 +1,9 @@
 import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
-const baseUrl = 'http://bctestnet2.brimstone.xpxsirius.io:3000';
-
-const networkType = publicTest;
-
-/// Simple Account API AnnounceTransaction
+/// Simple Transactions API request
 void main() async {
+  const baseUrl = 'http://bctestnet1.brimstone.xpxsirius.io:3000';
+
   /// Creating a client instance
   /// xpx_chain_sdk uses the Dart's native HttpClient.
   /// Depending on the platform, you may want to use either
@@ -16,6 +14,8 @@ void main() async {
   final client = SiriusClient.fromUrl(baseUrl, null);
 
   final generationHash = await client.generationHash;
+
+  final networkType = await client.networkType;
 
   /// Create an Account from a given Private key.
   final accountOne = PublicAccount.fromPublicKey(
@@ -31,7 +31,7 @@ void main() async {
 
   /// Create a Mosaic definition transaction.
   final mosaicDefinition = MosaicDefinitionTransaction(
-    // The maximum amount of time to include the transaction in the blockchain.
+      // The maximum amount of time to include the transaction in the blockchain.
       Deadline(hours: 1),
       mosaicNonce(),
       accountOne.publicKey,
@@ -43,7 +43,7 @@ void main() async {
 
   /// Create a Mosaic Supply Change transaction.
   final mosaicSupplyChange = MosaicSupplyChangeTransaction(
-    // The maximum amount of time to include the transaction in the blockchain.
+      // The maximum amount of time to include the transaction in the blockchain.
       Deadline(hours: 1),
       increase,
       mosaicDefinition.mosaicId,
@@ -54,8 +54,8 @@ void main() async {
   mosaicSupplyChange.toAggregate = accountOne;
 
   // Create Aggregate complete transaction.
-  final aggregateTransaction =
-      AggregateTransaction.bonded(deadline, [mosaicDefinition, mosaicSupplyChange], networkType);
+  final aggregateTransaction = AggregateTransaction.bonded(
+      deadline, [mosaicDefinition, mosaicSupplyChange], networkType);
 
   final signedAggregate = accountTwo.sign(aggregateTransaction, generationHash);
 

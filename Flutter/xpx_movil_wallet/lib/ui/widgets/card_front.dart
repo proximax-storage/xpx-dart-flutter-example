@@ -179,15 +179,8 @@ class CardFront extends StatelessWidget {
   }
 
   void _createNewAccount(sdk.Account account, AccountBloc bloc) {
-    print('CREATE 01');
-
     bloc.changeAccountAddress(account.address.address);
-    print('CREATE 02');
-
     bloc.changeAccountPrivateKey(account.account.privateKey.toString());
-    print('CREATE 03');
-
     bloc.changeAccountPublicKey(account.publicAccount.publicKey.toString());
-    print('CREATE 04');
   }
 }

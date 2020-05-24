@@ -80,7 +80,6 @@ class _AccountCreate extends State<AccountCreate> {
         );
       },
     );
-    print('PASO 015');
 
     Widget cardColors(AccountBloc bloc) {
       final dotSize =

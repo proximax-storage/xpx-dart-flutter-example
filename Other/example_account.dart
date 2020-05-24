@@ -65,8 +65,7 @@ void main() async {
   /// Get outgoing transactions information.
   /// Public Account - account to get transactions associated.
   try {
-    final result =
-        await client.account.outgoingTransactions(accountOne);
+    final result = await client.account.outgoingTransactions(accountOne);
     print(result);
   } on Exception catch (e) {
     print('Exception when calling Account->OutgoingTransactions: $e\n');
@@ -75,10 +74,18 @@ void main() async {
   /// Get unconfirmed transactions information.
   /// Public Account - account to get transactions associated.
   try {
-    final result =
-        await client.account.unconfirmedTransactions(accountOne);
+    final result = await client.account.unconfirmedTransactions(accountOne);
     print(result);
   } on Exception catch (e) {
     print('Exception when calling Account->UnconfirmedTransactions: $e\n');
+  }
+
+  /// Get properties information.
+  try {
+    final result =
+        await client.account.getAccountProperties(accountOne.address);
+    print(result);
+  } on Exception catch (e) {
+    print('Exception when calling Account->GetAccountProperties: $e\n');
   }
 }

@@ -2,7 +2,7 @@ import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
 /// Simple Transactions API request
 void main() async {
-  const baseUrl = 'http://bcstage1.xpxsirius.io:3000';
+  const baseUrl = 'http://bctestnet1.brimstone.xpxsirius.io:3000';
 
   /// Creating a client instance
   /// xpx_chain_sdk uses the Dart's native HttpClient.
@@ -28,13 +28,18 @@ void main() async {
   /// Create AddExchangeOfferTransaction.
   final addExchangeOfferTxn = AddExchangeOfferTransaction(
       deadline,
-      [AddOffer(offer: Offer(buyOffer, mosaic, Uint64(50)), duration: Uint64(1000))],
+      [
+        AddOffer(
+            offer: Offer(buyOffer, mosaic, Uint64(50)), duration: Uint64(1000))
+      ],
       networkType);
 
-  final signedAddExchangeOffer = account.sign(addExchangeOfferTxn, generationHash);
+  final signedAddExchangeOffer =
+      account.sign(addExchangeOfferTxn, generationHash);
 
   try {
-    final restAddExchangeOffer = await client.transaction.announce(signedAddExchangeOffer);
+    final restAddExchangeOffer =
+        await client.transaction.announce(signedAddExchangeOffer);
     print(restAddExchangeOffer);
     print('Signer: ${account.publicAccount.publicKey}');
     print('HashTxn: ${signedAddExchangeOffer.hash}');

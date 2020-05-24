@@ -1,11 +1,9 @@
 import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
-const baseUrl = 'http://bctestnet2.brimstone.xpxsirius.io:3000';
-
-const networkType = publicTest;
-
-/// Simple Transactions API request
+/// Simple Account API AnnounceTransaction
 void main() async {
+  const baseUrl = 'http://bctestnet2.brimstone.xpxsirius.io:3000';
+
   /// Creating a client instance
   /// xpx_chain_sdk uses the Dart's native HttpClient.
   /// Depending on the platform, you may want to use either
@@ -14,6 +12,8 @@ void main() async {
   /// 1- import 'package:http/browser_client.dart';
   /// 2- var client = newClient(config,  BrowserClient());
   final client = SiriusClient.fromUrl(baseUrl, null);
+
+  const networkType = publicTest;
 
   final accountTwo = Account.fromPrivateKey(
       '29CF06338133DEE64FC49BCB19C8936916DBE8DC461CE489BF9588BE3B9670B5',

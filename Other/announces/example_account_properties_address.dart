@@ -1,6 +1,6 @@
 import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
-/// Simple Transactions API request
+/// Simple Account API AnnounceTransaction
 void main() async {
   const baseUrl = 'http://bctestnet1.brimstone.xpxsirius.io:3000';
 
@@ -17,36 +17,33 @@ void main() async {
 
   final networkType = await client.networkType;
 
-  final deadline = Deadline(hours: 1);
-
-  final owner = Account.fromPrivateKey(
-      '63485A29E5D1AA15696095DCE792AACD014B85CBC8E473803406DEE20EC71958',
-      networkType);
-
+  /// Create an Account from a given Private key.
   final account = Account.fromPrivateKey(
-      '63485A29E5D1AA15696095DCE792AACD014B85CBC8E473803406DEE20EC71959',
+      '86258172F90639811F2ABD055747D1E11B55A64B68AED2CEA9A34FBD6C0BE791',
       networkType);
 
-  final mosaic = Mosaic(MosaicId.fromHex('4D99247A12F64217'), Uint64(10));
+  /// Create an Address from a given address raw.
+  final recipient =
+      Address.fromRawAddress('VCAEM4A2O3FDANHJICR5UVQUHIB3AOQEUO7L6QQN');
 
-  /// Create ExchangeOfferTransaction.
-  final exchangeOfferTxn = ExchangeOfferTransaction(
-      deadline,
+  /// Create a  transaction type AccountPropertiesAddressTransaction.
+  final tx = AccountPropertiesAddressTransaction(
+      // The maximum amount of time to include the transaction in the blockchain.
+      Deadline(hours: 1),
+      AccountPropertyType.blockAddress,
       [
-        ExchangeConfirmation(
-            offer: Offer(sellOffer, mosaic, Uint64(10)),
-            owner: owner.publicAccount.publicKey)
+        AccountPropertiesAddressModification(
+            PropertyModificationType.addProperty, recipient)
       ],
       networkType);
 
-  final signedExchangeOffer = account.sign(exchangeOfferTxn, generationHash);
+  final stx = account.sign(tx, generationHash);
 
   try {
-    final restExchangeOffer =
-        await client.transaction.announce(signedExchangeOffer);
-    print(restExchangeOffer);
+    final restTx = await client.transaction.announce(stx);
+    print(restTx);
+    print('Hash: ${stx.hash}');
     print('Signer: ${account.publicAccount.publicKey}');
-    print('HashTxn: ${signedExchangeOffer.hash}');
   } on Exception catch (e) {
     print('Exception when calling Transaction->Announce: $e\n');
   }

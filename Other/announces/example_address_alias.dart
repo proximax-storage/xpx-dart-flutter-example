@@ -2,7 +2,7 @@ import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
 /// Simple Transactions API request
 void main() async {
-  const baseUrl = 'http://bcstage1.xpxsirius.io:3000';
+  const baseUrl = 'http://bctestnet1.brimstone.xpxsirius.io:3000';
 
   /// Creating a client instance
   /// xpx_chain_sdk uses the Dart's native HttpClient.
@@ -26,7 +26,8 @@ void main() async {
   /// Define the namespaceId and the mosaicId you want to link.
   final namespaceId = NamespaceId.fromName('dartnamespace');
 
-  final address = Address.fromRawAddress('VC4A3Z6ALFGJPYAGDK2CNE2JAXOMQKILYBVNLQFS');
+  final address =
+      Address.fromRawAddress('VC4A3Z6ALFGJPYAGDK2CNE2JAXOMQKILYBVNLQFS');
 
   /// Create AddressAliasTransaction.
   /// note: If you want to unlink the alias, change alias action type to AliasActionType.aliasUnlink.

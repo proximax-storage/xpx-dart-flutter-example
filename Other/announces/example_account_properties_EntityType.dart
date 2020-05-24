@@ -1,6 +1,6 @@
 import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
-/// Simple Transactions API request
+/// Simple Account API AnnounceTransaction
 void main() async {
   const baseUrl = 'http://bctestnet1.brimstone.xpxsirius.io:3000';
 
@@ -17,27 +17,32 @@ void main() async {
 
   final networkType = await client.networkType;
 
-  final deadline = Deadline(hours: 1);
-
+  /// Create an Account from a given Private key.
   final account = Account.fromPrivateKey(
-      '63485A29E5D1AA15696095DCE792AACD014B85CBC8E473803406DEE20EC71958',
+      '86258172F90639811F2ABD055747D1E11B55A64B68AED2CEA9A34FBD6C0BE791',
       networkType);
 
-  final mosaicId = MosaicId.fromHex('4D99247A12F64217');
+  /// Create an TransactionType.
+  final entityType = TransactionType.addExchangeOffer;
 
-  /// Create RemoveExchangeOfferTransaction.
-  final addExchangeOfferTxn = RemoveExchangeOfferTransaction(deadline,
-      [RemoveOffer(offerType: sellOffer, assetId: mosaicId)], networkType);
+  /// Create a  transaction type AccountPropertiesEntityTypeTransaction.
+  final tx = AccountPropertiesEntityTypeTransaction(
+      // The maximum amount of time to include the transaction in the blockchain.
+      Deadline(hours: 1),
+      AccountPropertyType.blockTransaction,
+      [
+        AccountPropertiesEntityTypeModification(
+            PropertyModificationType.removeProperty, entityType)
+      ],
+      networkType);
 
-  final signedAddExchangeOffer =
-      account.sign(addExchangeOfferTxn, generationHash);
+  final stx = account.sign(tx, generationHash);
 
   try {
-    final restAddExchangeOffer =
-        await client.transaction.announce(signedAddExchangeOffer);
-    print(restAddExchangeOffer);
+    final restTx = await client.transaction.announce(stx);
+    print(restTx);
+    print('Hash: ${stx.hash}');
     print('Signer: ${account.publicAccount.publicKey}');
-    print('HashTxn: ${signedAddExchangeOffer.hash}');
   } on Exception catch (e) {
     print('Exception when calling Transaction->Announce: $e\n');
   }

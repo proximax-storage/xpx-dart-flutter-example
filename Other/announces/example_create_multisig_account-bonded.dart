@@ -1,11 +1,9 @@
 import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
-const baseUrl = 'http://bctestnet1.brimstone.xpxsirius.io:3000';
-
-const networkType = publicTest;
-
 /// Simple Transactions API request
 void main() async {
+  const baseUrl = 'http://bctestnet1.brimstone.xpxsirius.io:3000';
+
   /// Creating a client instance
   /// xpx_chain_sdk uses the Dart's native HttpClient.
   /// Depending on the platform, you may want to use either
@@ -16,6 +14,8 @@ void main() async {
   final client = SiriusClient.fromUrl(baseUrl, null);
 
   final generationHash = await client.generationHash;
+
+  final networkType = await client.networkType;
 
   final deadline = Deadline(hours: 1);
 
@@ -45,10 +45,10 @@ void main() async {
       PublicAccount.fromPublicKey(cosignatoryOnePrivateKey, networkType);
 
   final cosignerTwo =
-  PublicAccount.fromPublicKey(cosignatoryTwoPrivateKey, networkType);
+      PublicAccount.fromPublicKey(cosignatoryTwoPrivateKey, networkType);
 
   final cosignerThree =
-  PublicAccount.fromPublicKey(cosignatoryThreePrivateKey, networkType);
+      PublicAccount.fromPublicKey(cosignatoryThreePrivateKey, networkType);
 
   /// Create a  transaction type transfer
   final modifyMultiSigAccount = ModifyMultisigAccountTransaction(

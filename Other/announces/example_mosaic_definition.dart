@@ -1,6 +1,6 @@
 import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
-/// Simple Account API AnnounceTransaction
+/// Simple Transactions API request
 void main() async {
   const baseUrl = 'http://bctestnet1.brimstone.xpxsirius.io:3000';
 
@@ -24,7 +24,7 @@ void main() async {
 
   /// Create a Mosaic definition transaction.
   final mosaicDefinition = MosaicDefinitionTransaction(
-    // The maximum amount of time to include the transaction in the blockchain.
+      // The maximum amount of time to include the transaction in the blockchain.
       Deadline(hours: 1),
       mosaicNonce(),
       account.publicAccount.publicKey,
@@ -43,4 +43,3 @@ void main() async {
     print('Exception when calling Transaction->Announce: $e\n');
   }
 }
-

@@ -3,9 +3,9 @@ import 'package:xpx_chain_sdk/xpx_sdk.dart' as sdk;
 
 class ChainNodes {
   static final nodes = <ChainNode>[
-//    ChainNode.fromUrl('http://18.138.51.117:3000'),
+    ChainNode.fromUrl('http://bctestnet1.brimstone.xpxsirius.io:3000'),
     ChainNode.fromUrl('http://bctestnet2.brimstone.xpxsirius.io:3000'),
-//    ChainNode.fromUrl('http://bctestnet3.brimstone.xpxsirius.io:3000'),
+    ChainNode.fromUrl('http://bctestnet3.brimstone.xpxsirius.io:3000'),
   ];
 
   ChainNode get defaultNode => _getRandomNode();
