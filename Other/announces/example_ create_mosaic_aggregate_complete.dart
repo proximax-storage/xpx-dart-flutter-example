@@ -2,7 +2,6 @@ import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
 /// Simple Account API AnnounceTransaction
 void main() async {
-
   const baseUrl = 'http://bcstage1.xpxsirius.io:3000';
 
   /// Creating a client instance
@@ -19,15 +18,14 @@ void main() async {
   final networkType = await client.networkType;
 
   /// Create an Account from a given Private key.
-  final account = Account.fromPrivateKey(
-      '63485A29E5D1AA15696095DCE792AACD014B85CBC8E473803406DEE20EC71958',
-      networkType);
+  final account =
+      Account.fromPrivateKey('63485A29E5D1AA15696095DCE792AACD014B85CBC8E473803406DEE20EC71951', networkType);
 
-  final deadline =  Deadline(hours: 1);
+  final deadline = Deadline(hours: 1);
 
   /// Create a Mosaic definition transaction.
   final mosaicDefinition = MosaicDefinitionTransaction(
-    // The maximum amount of time to include the transaction in the blockchain.
+      // The maximum amount of time to include the transaction in the blockchain.
       Deadline(hours: 1),
       mosaicNonce(),
       account.publicAccount.publicKey,
@@ -39,7 +37,7 @@ void main() async {
 
   /// Create a Mosaic Supply Change transaction.
   final mosaicSupplyChange = MosaicSupplyChangeTransaction(
-    // The maximum amount of time to include the transaction in the blockchain.
+      // The maximum amount of time to include the transaction in the blockchain.
       Deadline(hours: 1),
       increase,
       mosaicDefinition.mosaicId,
@@ -52,8 +50,8 @@ void main() async {
   print(mosaicDefinition.mosaicId);
 
   // Create Aggregate complete transaction.
-  final aggregateTransaction = AggregateTransaction.complete(
-      deadline, [mosaicDefinition, mosaicSupplyChange], networkType);
+  final aggregateTransaction =
+      AggregateTransaction.complete(deadline, [mosaicDefinition, mosaicSupplyChange], networkType);
 
   final stx = account.sign(aggregateTransaction, generationHash);
 

@@ -2,7 +2,7 @@ import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
 /// Simple Account API request
 void main() async {
-  const baseUrl = 'http://bctestnetswap.xpxsirius.io:3000';
+  const baseUrl = 'http://bctestnet2.brimstone.xpxsirius.io:3000';
 
   const networkType = publicTest;
 
@@ -16,14 +16,12 @@ void main() async {
   final client = SiriusClient.fromUrl(baseUrl, null);
 
   /// Create an PublicAccount from a given public key.
-  final accountOne = PublicAccount.fromPublicKey(
-      '3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF331368A4232FD5',
-      networkType);
+  final accountOne =
+      PublicAccount.fromPublicKey('3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF331368A4232FD5', networkType);
 
   /// Create an Address from a given public key.
-  final addressTwo = Address.fromPublicKey(
-      '3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF331368A4232FD5',
-      networkType);
+  final addressTwo =
+      Address.fromPublicKey('3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF331368A4232FD5', networkType);
 
   try {
     /// Get AccountInfo for an account.
@@ -37,8 +35,7 @@ void main() async {
   try {
     /// Get AccountInfo for multiple accounts.
     /// Param List Addresses - addresses to get info.
-    final result =
-        await client.account.getAccountsInfo([accountOne.address, addressTwo]);
+    final result = await client.account.getAccountsInfo([accountOne.address, addressTwo]);
     print(result);
   } on Exception catch (e) {
     print('Exception when calling Account->GetAccountsInfo: $e\n');
@@ -82,8 +79,7 @@ void main() async {
 
   /// Get properties information.
   try {
-    final result =
-        await client.account.getAccountProperties(accountOne.address);
+    final result = await client.account.getAccountProperties(accountOne.address);
     print(result);
   } on Exception catch (e) {
     print('Exception when calling Account->GetAccountProperties: $e\n');

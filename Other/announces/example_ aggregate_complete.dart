@@ -20,14 +20,12 @@ void main() async {
   final deadline = Deadline(hours: 1);
 
   /// Create an Account from a given Private key.
-  final account = Account.fromPrivateKey(
-      '5D39DFFB41BB92C5932C29BAB4E1E5AC2C1901784BF008DC937A8A460B925331',
-      networkType);
+  final account =
+      Account.fromPrivateKey('5D39DFFB41BB92C5932C29BAB4E1E5AC2C1901784BF008DC937A8A460B925311', networkType);
 
   /// Create an Address from a given Public key.
-  final recipient = Address.fromPublicKey(
-      '68f50e10e5b8be2b7e9ddb687a667d6e94dd55fe02b4aed8195f51f9a242558c',
-      networkType);
+  final recipient =
+      Address.fromPublicKey('68f50e10e5b8be2b7e9ddb687a667d6e94dd55fe02b4aed8195f51f9a242558c', networkType);
 
   /// Create a  transaction type transfer
   final ttxOne = TransferTransaction(
@@ -57,8 +55,7 @@ void main() async {
   ttxTwo.toAggregate = account.publicAccount;
 
   // Create Aggregate complete transaction.
-  final aggregateTransaction =
-      AggregateTransaction.complete(deadline, [ttxOne, ttxTwo], networkType);
+  final aggregateTransaction = AggregateTransaction.complete(deadline, [ttxOne, ttxTwo], networkType);
 
   final stx = account.sign(aggregateTransaction, generationHash);
 

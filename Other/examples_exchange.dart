@@ -2,7 +2,7 @@ import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
 /// Simple Transactions API request
 void main() async {
-  const baseUrl = 'http://bcstage1.xpxsirius.io:3000';
+  const baseUrl = 'http://bctestnet2.brimstone.xpxsirius.io:3000';
 
   /// Creating a client instance
   /// xpx_chain_sdk uses the Dart's native HttpClient.
@@ -17,9 +17,8 @@ void main() async {
 
   final networkType = await client.networkType;
 
-  final account = Account.fromPrivateKey(
-      '63485A29E5D1AA15696095DCE792AACD014B85CBC8E473803406DEE20EC71958',
-      networkType);
+  final account =
+      Account.fromPrivateKey('63485A29E5D1AA15696095DCE792AACD014B85CBC8E473803406DEE20EC71958', networkType);
 
   try {
     /// Get a transaction information given a transactionId or hash.
@@ -31,8 +30,7 @@ void main() async {
 
   try {
     /// Get a transaction information given a transactionId or hash.
-    final result =
-        await client.exchange.getAccountExchangeInfo(account.publicAccount);
+    final result = await client.exchange.getAccountExchangeInfo(account.publicAccount);
     print(result.sellOffers);
   } on Exception catch (e) {
     print('Exception when calling Transaction->GetTransaction: $e\n');

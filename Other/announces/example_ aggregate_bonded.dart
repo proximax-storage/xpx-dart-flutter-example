@@ -18,14 +18,12 @@ void main() async {
   const networkType = publicTest;
 
   /// Create an Account from a given Private key.
-  final accountOne = Account.fromPrivateKey(
-      '1ACE45EAD3C2F0811D9F4355F35BF78483324975083BE4E503EA49DFFEA691A0',
-      networkType);
+  final accountOne =
+      Account.fromPrivateKey('1ACE45EAD3C2F0811D9F4355F35BF78483324975083BE4E503EA49DFFEA691A1', networkType);
 
   /// Create an Address from a given Public key.
-  final accountTwo = PublicAccount.fromPublicKey(
-      '68f50e10e5b8be2b7e9ddb687a667d6e94dd55fe02b4aed8195f51f9a242558c',
-      networkType);
+  final accountTwo =
+      PublicAccount.fromPublicKey('68f50e10e5b8be2b7e9ddb687a667d6e94dd55fe02b4aed8195f51f9a242558c', networkType);
 
   final deadline = Deadline(hours: 1);
 
@@ -57,8 +55,7 @@ void main() async {
   ttxTwo.toAggregate = accountTwo;
 
   // Create Aggregate complete transaction.
-  final aggregateTransaction =
-      AggregateTransaction.bonded(deadline, [ttxOne, ttxTwo], networkType);
+  final aggregateTransaction = AggregateTransaction.bonded(deadline, [ttxOne, ttxTwo], networkType);
 
   final signedAggregate = accountOne.sign(aggregateTransaction, generationHash);
 
@@ -87,19 +84,16 @@ void main() async {
   int number = 0;
   while (number == 0) {
     await new Future.delayed(const Duration(seconds: 3));
-    final status =
-        await client.transaction.getTransactionStatus(signedLock.hash);
+    final status = await client.transaction.getTransactionStatus(signedLock.hash);
     if (status.status == 'Success' && status.group == 'confirmed') {
       print('Status: ${status.group} \n');
       try {
-        final restAggregateTx =
-            await client.transaction.announceAggregateBonded(signedAggregate);
+        final restAggregateTx = await client.transaction.announceAggregateBonded(signedAggregate);
         print(restAggregateTx);
         print('Signer: ${accountOne.publicAccount.publicKey}');
         print('HashTxn: ${signedAggregate.hash}');
       } on Exception catch (e) {
-        print(
-            'Exception when calling Transaction->AnnounceAggregateBonded: $e\n');
+        print('Exception when calling Transaction->AnnounceAggregateBonded: $e\n');
       }
       number = 1;
     } else {

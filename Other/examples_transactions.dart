@@ -2,7 +2,7 @@ import 'package:xpx_chain_sdk/xpx_sdk.dart';
 
 /// Simple Transactions API request
 void main() async {
-  const baseUrl = 'http://bctestnet3.brimstone.xpxsirius.io:3000';
+  const baseUrl = 'http://bctestnet2.brimstone.xpxsirius.io:3000';
 
   /// Creating a client instance
   /// xpx_chain_sdk uses the Dart's native HttpClient.
@@ -27,28 +27,27 @@ void main() async {
     print('Exception when calling Transaction->GetTransaction: $e\n');
   }
 
-//  try {
-//    /// Get a List of [Transaction] information for a given List of transactionIds.
-//    final result = await client.transaction.getTransactions([hashOne,hashTwo]);
-//    print(result);
-//  } on Exception catch (e) {
-//    print('Exception when calling Transaction->GetTransactions: $e\n');
-//  }
-//
-//  try {
-//    /// Get the transaction status for a given hash.
-//    final result = await client.transaction.getTransactionStatus(hashOne);
-//    print(result);
-//  } on Exception catch (e) {
-//    print('Exception when calling Transaction->getTransactionStatus: $e\n');
-//  }
-//
-//  try {
-//    /// Get transactions status.
-//    final result = await client.transaction.getTransactionsStatuses([hashOne,hashTwo]);
-//    print(result);
-//  } on Exception catch (e) {
-//    print('Exception when calling Transaction->getTransactionStatus: $e\n');
-//  }
-}
+  try {
+    /// Get a List of [Transaction] information for a given List of transactionIds.
+    final result = await client.transaction.getTransactions([hashOne]);
+    print(result);
+  } on Exception catch (e) {
+    print('Exception when calling Transaction->GetTransactions: $e\n');
+  }
 
+  try {
+    /// Get the transaction status for a given hash.
+    final result = await client.transaction.getTransactionStatus(hashOne);
+    print(result);
+  } on Exception catch (e) {
+    print('Exception when calling Transaction->getTransactionStatus: $e\n');
+  }
+
+  try {
+    /// Get transactions status.
+    final result = await client.transaction.getTransactionsStatuses([hashOne]);
+    print(result);
+  } on Exception catch (e) {
+    print('Exception when calling Transaction->getTransactionStatus: $e\n');
+  }
+}
